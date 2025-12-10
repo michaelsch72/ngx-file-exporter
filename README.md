@@ -1,59 +1,97 @@
 # NgxFileExporter
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.0.
+A simple, lightweight, and powerful Angular library to export data to Excel files. It wraps `exceljs` and `file-saver` to provide an easy-to-use service for generating professional Excel reports with custom styling, headers, and column formatting.
 
-## Development server
+## Features
 
-To start a local development server, run:
+- 🚀 **Easy to use**: Just inject the service and call one method.
+- 🎨 **Customizable**: simple configuration for headers, column widths, and formats.
+- 💅 **Styling**: Support for custom header colors and font styles.
+- 🔍 **Auto-filter**: Automatically add filters to your Excel sheets.
+- 📦 **Zero-config**: `exceljs` and `file-saver` are automatically installed as dependencies.
 
-```bash
-ng serve
-```
+## Installation
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Run the following command to install the library:
 
 ```bash
-ng generate component component-name
+npm install ngx-file-exporter
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+No need to install `exceljs` or `file-saver` manually, they are included!
 
-```bash
-ng generate --help
+## Usage
+
+### 1. Import `NgxFileExporterService`
+
+Inject the service into your component.
+
+```typescript
+import { Component, inject } from '@angular/core';
+import { NgxFileExporterService, ExportOptions } from 'ngx-file-exporter';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  template: `<button (click)="export()">Export to Excel</button>`
+})
+export class AppComponent {
+  private exporter = inject(NgxFileExporterService);
+
+  data = [
+    { id: 1, name: 'John Doe', salary: 50000, joined: new Date('2023-01-15') },
+    { id: 2, name: 'Jane Smith', salary: 65000, joined: new Date('2023-02-20') },
+  ];
+
+  export() {
+    const options: ExportOptions = {
+      fileName: 'employees',
+      sheetName: 'Employee Data',
+      headerStyle: {
+        fillColor: 'FF0078D7', // ARGB Hex code without #
+        fontColor: 'FFFFFFFF'
+      },
+      columns: [
+        { key: 'id', header: 'ID', width: 10 },
+        { key: 'name', header: 'Full Name', width: 25 },
+        { key: 'salary', header: 'Salary', width: 15, format: 'currency' },
+        { key: 'joined', header: 'Join Date', width: 15, format: 'date' }
+      ],
+      autoFilter: true
+    };
+
+    this.exporter.exportToExcel(this.data, options);
+  }
+}
 ```
 
-## Building
+## API Reference
 
-To build the project run:
+### `exportToExcel(data: any[], options: ExportOptions): Promise<void>`
 
-```bash
-ng build
-```
+Generates and downloads the Excel file.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+### `ExportOptions` Interface
 
-## Running unit tests
+| Property | Type | Description |
+|----------|------|-------------|
+| `fileName` | `string` | **Required.** Name of the file to download (without extension). |
+| `sheetName` | `string` | Name of the worksheet. Defaults to 'Data'. |
+| `headerStyle` | `object` | Styling for the header row. |
+| `headerStyle.fillColor` | `string` | ARGB Hex color for background (e.g., 'FF0000FF'). |
+| `headerStyle.fontColor` | `string` | ARGB Hex color for font (e.g., 'FFFFFFFF'). |
+| `columns` | `ColumnDefinition[]` | Configuration for each column. |
+| `autoFilter` | `boolean` | Enable auto-filter on the header row. |
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+### `ColumnDefinition` Interface
 
-```bash
-ng test
-```
+| Property | Type | Description |
+|----------|------|-------------|
+| `key` | `string` | **Required.** The key in your data object to map to this column. |
+| `header` | `string` | The text to display in the header. Defaults to the key. |
+| `width` | `number` | Width of the column. |
+| `format` | `string` | Format preset: `'currency'`, `'percent'`, `'date'`, or a custom Excel format string (e.g., `'#,##0.00'`). |
 
-## Running end-to-end tests
+## License
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+MIT
