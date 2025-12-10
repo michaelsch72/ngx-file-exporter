@@ -1,0 +1,14 @@
+{
+  "name": "ngx-file-exporter",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^21.0.0",
+    "@angular/core": "^21.0.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0",
+    "exceljs": "^4.4.0",
+    "file-saver": "^2.0.5"
+  },
+  "sideEffects": false
+}
